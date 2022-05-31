@@ -11,18 +11,19 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\HasApiTokens;
 use Symfony\Component\HttpKernel\Profiler\Profile;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class User extends Model
+class User extends Authenticatable implements JWTSubject
 {
     use HasFactory;
+    use Notifiable;
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
         'email',
         'password',
     ];
@@ -50,7 +51,20 @@ class User extends Model
         return $this->hasOne(Adress::class, 'id_usuario');
     }
 
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
 
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
 
 
 
